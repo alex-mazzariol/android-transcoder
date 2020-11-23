@@ -3,6 +3,8 @@ android-transcoder
 
 Hardware accelerated transcoder for Android, written in pure Java.
 
+Now supports setting output audio channels to zero to remove audio from source files.
+
 ## Why?
 
 Android does not offer straight forward way to transcode video.
@@ -14,21 +16,13 @@ To transcode without any hassle written above, I created this library to provide
 ## Requirements
 
 API Level 18 (Android 4.3, JELLY_BEAN_MR2) or later.
-If your app targets older Android, you should add below line to AndroidManifest.xml:
-
-```xml
-<!-- Only supports API >= 18 -->
-<uses-sdk tools:overrideLibrary="net.ypresto.androidtranscoder" />
-```
-
 Please ensure checking Build.VERSION by your self.
 
 ## Usage
 
 ```java
 @Override
-protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    ParcelFileDescriptor parcelFileDescriptor = resolver.openFileDescriptor(data.getData(), "r");
+protected void encode() {
     FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
     MediaTranscoder.Listener listener = new MediaTranscoder.Listener() {
         @Override
@@ -38,7 +32,6 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         @Override
         public void onTranscodeCompleted() {
-            startActivity(new Intent(Intent.ACTION_VIEW).setDataAndType(Uri.fromFile(file), "video/mp4"));
             ...
         }
 

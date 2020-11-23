@@ -21,7 +21,7 @@ public class AudioTrackTranscoder implements TrackTranscoder {
     private long mWrittenPresentationTimeUs;
 
     private final int mTrackIndex;
-    private final MediaFormat mInputFormat;
+
     private final MediaFormat mOutputFormat;
 
     private final MediaCodec.BufferInfo mBufferInfo = new MediaCodec.BufferInfo();
@@ -46,8 +46,6 @@ public class AudioTrackTranscoder implements TrackTranscoder {
         mTrackIndex = trackIndex;
         mOutputFormat = outputFormat;
         mMuxer = muxer;
-
-        mInputFormat = mExtractor.getTrackFormat(mTrackIndex);
     }
 
     @Override
@@ -130,6 +128,12 @@ public class AudioTrackTranscoder implements TrackTranscoder {
             case MediaCodec.INFO_TRY_AGAIN_LATER:
                 return DRAIN_STATE_NONE;
             case MediaCodec.INFO_OUTPUT_FORMAT_CHANGED:
+                MediaFormat fmt = mDecoder.getOutputFormat();
+                if(fmt.getInteger(MediaFormat.KEY_CHANNEL_COUNT) == 0) {
+                    //Disable audio transcoding altogether
+                    mIsDecoderEOS = true;
+                    return DRAIN_STATE_NONE;
+                }
                 mAudioChannel.setActualDecodedFormat(mDecoder.getOutputFormat());
             case MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED:
                 return DRAIN_STATE_SHOULD_RETRY_IMMEDIATELY;
