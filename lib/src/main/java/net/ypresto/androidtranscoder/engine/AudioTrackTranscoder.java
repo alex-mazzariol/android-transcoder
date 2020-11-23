@@ -128,12 +128,6 @@ public class AudioTrackTranscoder implements TrackTranscoder {
             case MediaCodec.INFO_TRY_AGAIN_LATER:
                 return DRAIN_STATE_NONE;
             case MediaCodec.INFO_OUTPUT_FORMAT_CHANGED:
-                MediaFormat fmt = mDecoder.getOutputFormat();
-                if(fmt.getInteger(MediaFormat.KEY_CHANNEL_COUNT) == 0) {
-                    //Disable audio transcoding altogether
-                    mIsDecoderEOS = true;
-                    return DRAIN_STATE_NONE;
-                }
                 mAudioChannel.setActualDecodedFormat(mDecoder.getOutputFormat());
             case MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED:
                 return DRAIN_STATE_SHOULD_RETRY_IMMEDIATELY;

@@ -183,6 +183,8 @@ public class MediaTranscoderEngine {
         mVideoTrackTranscoder.setup();
         if (audioOutputFormat == null) {
             mAudioTrackTranscoder = new PassThroughTrackTranscoder(mExtractor, trackResult.mAudioTrackIndex, queuedMuxer, QueuedMuxer.SampleType.AUDIO);
+        } else if(audioOutputFormat.getInteger(MediaFormat.KEY_CHANNEL_COUNT) == 0) {
+            mAudioTrackTranscoder = new SuppressTrackTranscoder(mExtractor, trackResult.mAudioTrackIndex, queuedMuxer, QueuedMuxer.SampleType.AUDIO);
         } else {
             mAudioTrackTranscoder = new AudioTrackTranscoder(mExtractor, trackResult.mAudioTrackIndex, audioOutputFormat, queuedMuxer);
         }

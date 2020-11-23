@@ -66,9 +66,11 @@ public class QueuedMuxer {
         mListener.onDetermineOutputFormat();
 
         mVideoTrackIndex = mMuxer.addTrack(mVideoFormat);
-        Log.v(TAG, "Added track #" + mVideoTrackIndex + " with " + mVideoFormat.getString(MediaFormat.KEY_MIME) + " to muxer");
-        mAudioTrackIndex = mMuxer.addTrack(mAudioFormat);
-        Log.v(TAG, "Added track #" + mAudioTrackIndex + " with " + mAudioFormat.getString(MediaFormat.KEY_MIME) + " to muxer");
+        Log.v(TAG, "Added video track #" + mVideoTrackIndex + " with " + mVideoFormat.getString(MediaFormat.KEY_MIME) + " to muxer");
+        if(mAudioFormat.getInteger(MediaFormat.KEY_CHANNEL_COUNT) > 0) {
+            mAudioTrackIndex = mMuxer.addTrack(mAudioFormat);
+            Log.v(TAG, "Added audio track #" + mAudioTrackIndex + " with " + mAudioFormat.getString(MediaFormat.KEY_MIME) + " to muxer");
+        }
         mMuxer.start();
         mStarted = true;
 
