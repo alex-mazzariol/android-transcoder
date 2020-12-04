@@ -30,8 +30,8 @@ public class SuppressTrackTranscoder implements TrackTranscoder {
     private final QueuedMuxer mMuxer;
     private final QueuedMuxer.SampleType mSampleType;
     private final MediaCodec.BufferInfo mBufferInfo = new MediaCodec.BufferInfo();
-    private final int mBufferSize;
-    private final ByteBuffer mBuffer;
+    private int mBufferSize;
+    private ByteBuffer mBuffer;
     private boolean mIsEOS;
     private final MediaFormat mActualOutputFormat;
     private long mWrittenPresentationTimeUs;
@@ -45,14 +45,14 @@ public class SuppressTrackTranscoder implements TrackTranscoder {
 
         mActualOutputFormat = mExtractor.getTrackFormat(mTrackIndex);
         mActualOutputFormat.setInteger(MediaFormat.KEY_CHANNEL_COUNT, 0);
-        mMuxer.setOutputFormat(mSampleType, mActualOutputFormat);
-        mBufferSize = mActualOutputFormat.getInteger(MediaFormat.KEY_MAX_INPUT_SIZE);
-        mBuffer = ByteBuffer.allocateDirect(mBufferSize).order(ByteOrder.nativeOrder());
     }
 
     @Override
     public void setup() {
         Log.i("SuppressTrackTranscoder", "Suppressing audio data");
+        mMuxer.setOutputFormat(mSampleType, mActualOutputFormat);
+        mBufferSize = mActualOutputFormat.getInteger(MediaFormat.KEY_MAX_INPUT_SIZE);
+        mBuffer = ByteBuffer.allocateDirect(mBufferSize).order(ByteOrder.nativeOrder());
     }
 
     @Override

@@ -23,7 +23,7 @@ class Android720pFormatStrategy implements MediaFormatStrategy {
     public static final int AUDIO_BITRATE_AS_IS = -1;
     public static final int AUDIO_CHANNELS_AS_IS = -1;
     private static final String TAG = "720pFormatStrategy";
-    private static final int LONGER_LENGTH = 1280;
+    //private static final int LONGER_LENGTH = 1280;
     private static final int SHORTER_LENGTH = 720;
     private static final int DEFAULT_VIDEO_BITRATE = 8000 * 1000; // From Nexus 4 Camera in 720p
     private final int mVideoBitrate;
@@ -48,21 +48,21 @@ class Android720pFormatStrategy implements MediaFormatStrategy {
     public MediaFormat createVideoOutputFormat(MediaFormat inputFormat) {
         int width = inputFormat.getInteger(MediaFormat.KEY_WIDTH);
         int height = inputFormat.getInteger(MediaFormat.KEY_HEIGHT);
-        int longer, shorter, outWidth, outHeight;
+        int shorter, outWidth, outHeight/*, longer*/;
         if (width >= height) {
-            longer = width;
+            //longer = width;
             shorter = height;
-            outWidth = LONGER_LENGTH;
             outHeight = SHORTER_LENGTH;
+            outWidth = outHeight * height / width;
         } else {
             shorter = width;
-            longer = height;
+            //longer = height;
             outWidth = SHORTER_LENGTH;
-            outHeight = LONGER_LENGTH;
+            outHeight = outWidth * width / height;
         }
-        if (longer * 9 != shorter * 16) {
+        /*if (longer * 9 != shorter * 16) {
             throw new OutputFormatUnavailableException("This video is not 16:9, and is not able to transcode. (" + width + "x" + height + ")");
-        }
+        }*/
         if (shorter <= SHORTER_LENGTH) {
             Log.d(TAG, "This video is less or equal to 720p, pass-through. (" + width + "x" + height + ")");
             return null;
