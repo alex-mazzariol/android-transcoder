@@ -22,7 +22,7 @@ android {
 
 def LIB_GROUP_ID = 'net.ypresto.androidtranscoder'
 def LIB_ARTIFACT_ID = 'android-transcoder'
-def LIB_VERSION = '0.5.3'
+def LIB_VERSION = '0.5.4'
 
 task sourceJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs

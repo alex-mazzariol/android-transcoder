@@ -48,15 +48,13 @@ class Android720pFormatStrategy implements MediaFormatStrategy {
     public MediaFormat createVideoOutputFormat(MediaFormat inputFormat) {
         int width = inputFormat.getInteger(MediaFormat.KEY_WIDTH);
         int height = inputFormat.getInteger(MediaFormat.KEY_HEIGHT);
-        int shorter, outWidth, outHeight/*, longer*/;
+        int shorter, outWidth, outHeight;
         if (width >= height) {
-            //longer = width;
             shorter = height;
             outHeight = SHORTER_LENGTH;
             outWidth = outHeight * height / width;
         } else {
             shorter = width;
-            //longer = height;
             outWidth = SHORTER_LENGTH;
             outHeight = outWidth * width / height;
         }
@@ -64,13 +62,14 @@ class Android720pFormatStrategy implements MediaFormatStrategy {
             throw new OutputFormatUnavailableException("This video is not 16:9, and is not able to transcode. (" + width + "x" + height + ")");
         }*/
         if (shorter <= SHORTER_LENGTH) {
-            Log.d(TAG, "This video is less or equal to 720p, pass-through. (" + width + "x" + height + ")");
-            return null;
+            Log.d(TAG, "This video is less or equal to 720p, pass-through size with recoding. (" + width + "x" + height + ")");
+            outWidth = width;
+            outHeight = height;
         }
         MediaFormat format = MediaFormat.createVideoFormat("video/avc", outWidth, outHeight);
         // From Nexus 4 Camera in 720p
         format.setInteger(MediaFormat.KEY_BIT_RATE, mVideoBitrate);
-        format.setInteger(MediaFormat.KEY_FRAME_RATE, 30);
+        format.setInteger(MediaFormat.KEY_FRAME_RATE, 24);
         format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 3);
         format.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
         return format;
